@@ -14,7 +14,7 @@ export default function Register() {
   const submit = async e => { e.preventDefault(); setErr(''); setBusy(true);
     const profile = Object.fromEntries(Object.entries(p).map(([k, v]) => [k, LIST.includes(k) ? v.split(',').map(s => s.trim()).filter(Boolean) : v]));
     try { const u = await register({ ...b, role, profile }); nav(HOME[u.role], { replace: true }); }
-    catch (x) { const d = x.response?.data; setErr(d?.details ? Object.values(d.details).join(' · ') : d?.message || 'Network error'); } finally { setBusy(false); } };
+    catch (x) { const d = x.response?.data; setErr(!x.response ? `No response (${x.message})` : d?.details ? Object.values(d.details).join(' · ') : `Server ${x.response.status}: ${d?.message || JSON.stringify(d)}`); }finally { setBusy(false); } };
   if (!role) return (<div className="grid min-h-screen place-items-center p-4"><div className="w-full max-w-xl">
     <h1 className="mb-4 text-center text-xl font-semibold">Choose your role</h1>
     <div className="grid gap-3 sm:grid-cols-3">{ROLES.map(([r, t]) => (
